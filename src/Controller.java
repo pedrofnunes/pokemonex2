@@ -38,9 +38,11 @@ public class Controller {
 		Event e, f;
 		f = null;
 		while((e = es.getNext()) != null) {
-			//es.removeCurrent();
+			es.removeCurrent();
 			f = es.getNext();
-		//	es.removeCurrent();
+			if (f == null)
+				es.voltaNext();
+			es.removeCurrent();
 			if (f != null){
 				if (e.getPrior() <= f.getPrior()) {
 					if(e.ready()){
@@ -50,9 +52,6 @@ public class Controller {
 					if(e.getProblema() == false && f.ready()){
 						f.action();
 					}
-					es.removeCurrent();
-					es.voltaNext();
-					es.removeCurrent();
 				}
 				else{
 					if(f.ready()){
@@ -61,17 +60,12 @@ public class Controller {
 					if(f.getProblema() == false && e.ready()){
 						e.action();
 					}
-					es.removeCurrent();
-					es.voltaNext();
-					es.removeCurrent();
 				}
 			}
 			else{
 				if(e.ready()){
 					e.action();
-					es.removeCurrent();
-					es.voltaNext();
-					es.removeCurrent();				}
+					}
 			}
 		}
 	}

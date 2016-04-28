@@ -16,19 +16,19 @@ public class Batalha extends Controller {
 		}
 		public void action(){
 			src.getAtivo().getAtaque(i).usar(target.getAtivo());
-			System.out.println(src.getAtivo().getNome()+" usou "+src.getAtivo().getAtaque(i).getNome()+"! "+src.getAtivo().getAtaque(i).getDano()+" de dano.");
+			System.out.println(src.getAtivo().getNome()+" usou "+src.getAtivo().getAtaque(i).getNome()+"! "+src.getAtivo().getAtaque(i).getDano()+" de dano em "+target.getAtivo().getNome()+". HP:"+target.getAtivo().getHP()+"/"+target.getAtivo().getMaxHP());
 			if (target.getAtivo().getEstado() == false){
 				System.out.println(target.getAtivo().getNome()+" desmaiou!");
 				target.pokeMorreu();
 				if (target.perdeu() == true){
 					this.deuProblema();
-					System.out.println(target.getNome()+" não tem mais Pokémons aptos! "+src.getNome()+" é o vencedor!");
+					System.out.println(target.getNome()+" nï¿½o tem mais Pokï¿½mons aptos! "+src.getNome()+" ï¿½ o vencedor!");
 					finaliza();
 				}
 				else{
 					target.trocaPoke(target.proxVivo());
 					this.deuProblema();
-					System.out.println(target.getNome()+": "+target.getAtivo().getNome()+", escolho você!");
+					System.out.println(target.getNome()+": "+target.getAtivo().getNome()+", escolho vocï¿½!");
 				}
 			}
 		}
@@ -47,7 +47,7 @@ public class Batalha extends Controller {
 		}
 		public void action(){
 			item.usaItem(p);
-			System.out.println(item.getNome()+" usado em "+p.getNome()+". Novo HP = "+p.getHP());
+			System.out.println(item.getNome()+" usado em "+p.getNome()+". HP:"+p.getHP()+"/"+p.getMaxHP());
 		}
 	}
 	private class Trocar extends Event{
@@ -81,7 +81,7 @@ public class Batalha extends Controller {
 		}
 		public void action(){
 			this.deuProblema();
-			System.out.println(fugiu.getNome()+" fugiu. "+ganhou.getNome()+" é o vencedor!");
+			System.out.println(fugiu.getNome()+" fugiu. "+ganhou.getNome()+" ï¿½ o vencedor!");
 			finaliza();
 		}
 	}
@@ -144,62 +144,22 @@ public class Batalha extends Controller {
 
 		public void action(){
 			long tm = System.currentTimeMillis();
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			/*addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new UsarItem(tm, potion, charizard));
-			addEvent(new Trocar(tm, silver, 3));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
+			addEvent(new Atacar(tm, 3, red, silver)); //pikachu quick
+			addEvent(new Atacar(tm, 3, silver, red)); //scep leaf
+			addEvent(new Atacar(tm, 0, red, silver)); //pikachu zap (depois)
+			addEvent(new Atacar(tm, 2, silver, red)); //scep razor
+			addEvent(new Atacar(tm, 1, red, silver)); //pikachu thunder
+			addEvent(new Atacar(tm, 1, silver, red)); //scep sludge e pika morre
+			addEvent(new Atacar(tm, 1, red, silver)); //chari flame (depois)
+			addEvent(new UsarItem(tm, potion, sceptile)); //scep recupera
+			addEvent(new Atacar(tm, 0, red, silver)); //chari fire
+			addEvent(new Trocar(tm, silver, 3)); //vai octi
+			addEvent(new Atacar(tm, 2, red, silver)); //chari fly
+			addEvent(new Atacar(tm, 2, silver, red)); //octi ice
+			addEvent(new Atacar(tm, 3, red, silver)); //chari metal e octi morre
+			addEvent(new Atacar(tm, 0, silver, red)); //deleta
+			addEvent(new Atacar(tm, 2, red, silver)); //chari fly
+			addEvent(new Atacar(tm, 3, silver, red)); //garde confusion
 			addEvent(new Atacar(tm, 0, red, silver));
 			addEvent(new Atacar(tm, 0, silver, red));
 			addEvent(new Atacar(tm, 1, red, silver));
@@ -214,7 +174,36 @@ public class Batalha extends Controller {
 			addEvent(new Atacar(tm, 0, silver, red));
 			addEvent(new Atacar(tm, 1, red, silver));
 			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));*/
+			addEvent(new Atacar(tm, 3, red, silver));
+			addEvent(new Atacar(tm, 3, silver, red));
+			addEvent(new Atacar(tm, 2, red, silver));
+			addEvent(new Atacar(tm, 3, silver, red));
+			addEvent(new Atacar(tm, 0, red, silver));
+			addEvent(new Atacar(tm, 0, silver, red));
+			addEvent(new Atacar(tm, 1, red, silver));
+			addEvent(new Atacar(tm, 1, silver, red));
+			addEvent(new Atacar(tm, 3, red, silver));
+			addEvent(new Atacar(tm, 3, silver, red));
+			addEvent(new Atacar(tm, 2, red, silver));
+			addEvent(new Atacar(tm, 3, silver, red));
+			addEvent(new Atacar(tm, 0, red, silver));
+			addEvent(new Atacar(tm, 0, silver, red));
+			addEvent(new Atacar(tm, 1, red, silver));
+			addEvent(new Atacar(tm, 1, silver, red));
+			addEvent(new Atacar(tm, 0, red, silver));
+			addEvent(new Atacar(tm, 2, silver, red));
+			addEvent(new Atacar(tm, 1, red, silver));
+			addEvent(new Atacar(tm, 3, silver, red));
+			addEvent(new Atacar(tm, 2, red, silver));
+			addEvent(new Atacar(tm, 2, silver, red));
+			addEvent(new Atacar(tm, 3, red, silver));
+			addEvent(new Atacar(tm, 3, silver, red));
+			addEvent(new Atacar(tm, 2, red, silver));
+			addEvent(new Atacar(tm, 3, silver, red));
+			addEvent(new Atacar(tm, 0, red, silver));
+			addEvent(new Atacar(tm, 0, silver, red));
+			addEvent(new Atacar(tm, 1, red, silver));
+			addEvent(new Atacar(tm, 1, silver, red));
 		}
 
 	}
