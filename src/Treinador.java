@@ -3,6 +3,7 @@ public class Treinador {
 	private String nome;
 	private final int nPokes;
 	private int aptos;
+	private boolean selvagem = false;
 	private Pokemon pokemons[] = new Pokemon[6];
 	public Treinador (String nome, int n, Pokemon poke1, Pokemon poke2, Pokemon poke3, Pokemon poke4, Pokemon poke5, Pokemon poke6){
 		this.nome = nome;
@@ -14,7 +15,6 @@ public class Treinador {
 		pokemons[3] = poke4;
 		pokemons[4] = poke5;
 		pokemons[5] = poke6;
-		
 	}
 	public Treinador (String nome, int n, Pokemon poke1, Pokemon poke2, Pokemon poke3, Pokemon poke4, Pokemon poke5){
 		this (nome,n, poke1, poke2, poke3, poke4, poke5, null);
@@ -28,8 +28,9 @@ public class Treinador {
 	public Treinador (String nome, int n, Pokemon poke1, Pokemon poke2){
 		this (nome,n, poke1, poke2, null, null, null, null);
 	}
-	public Treinador (String nome, int n, Pokemon poke1){
+	public Treinador (String nome, int n, Pokemon poke1, boolean selvagem){
 		this (nome,n, poke1, null, null, null, null, null);
+		this.selvagem = selvagem;
 	}
 	public boolean perdeu(){
 		if (aptos == 0){
@@ -50,6 +51,9 @@ public class Treinador {
 	}
 	public String getNome(){
 		return nome;
+	}
+	public boolean ehSelvagem(){
+		return selvagem;
 	}
 	public int proxVivo(){
 		int i;

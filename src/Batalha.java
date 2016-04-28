@@ -1,14 +1,55 @@
+import java.util.Random;
+
 
 public class Batalha extends Controller {
+	private boolean encontrou = false;
+	public void marcaAchou(){
+		encontrou = true;
+	}
+	public boolean achou(){
+		return encontrou;
+	}
+	private class Andar extends Event{
+		private Random rnd = new Random();
+		private int prior = 0;
+		char direcao;
+		Mapa mapa;
+		public Andar (long eventTime, char direcao, Mapa mapa){
+			super(eventTime);
+			this.mapa = mapa;
+			this.direcao = direcao;
+		}
+		public int getPrior(){
+			return (prior);
+		}
+		public void action(){
+			mapa.andar (direcao);
+			System.out.println("Andou");
+			if (mapa.getGrama() == true){
+				if (rnd.nextInt(101) > 49){
+					marcaAchou();
+					this.deuProblema();
+					finaliza();
+				}
+			}
+		}
+	}
 	private class Atacar extends Event{
 		private int prior = 3;//ou 4 ou 5, dependendo da velocidade do ataque
 		private Treinador src;
 		private Treinador target;
 		private int i;
+		private Random rnd = new Random();
 		public Atacar (long eventTime, int i, Treinador src, Treinador target) {
 			super(eventTime);
 			this.src = src;
 			this.i = i;
+			this.target = target;
+		}
+		public Atacar (long eventTime, Treinador src, Treinador target){
+			super(eventTime);
+			this.src = src;
+			this.i = rnd.nextInt(4);
 			this.target = target;
 		}
 		public int getPrior(){
@@ -22,7 +63,12 @@ public class Batalha extends Controller {
 				target.pokeMorreu();
 				if (target.perdeu() == true){
 					this.deuProblema();
-					System.out.println(target.getNome()+" n�o tem mais Pok�mons aptos! "+src.getNome()+" � o vencedor!");
+					if (src.ehSelvagem() == true)
+						System.out.println(target.getNome()+" n�o tem mais Pok�mons aptos! "+target.getNome()+" foge para socorrer seus Pokemons!");
+					if (src.ehSelvagem() == false && target.ehSelvagem() == true)
+						System.out.println(src.getNome()+" saiu da batalha com sucesso!");
+					if (src.ehSelvagem() == false && target.ehSelvagem() == false)
+						System.out.println(target.getNome()+" n�o tem mais Pok�mons aptos! "+src.getNome()+" � o vencedor!");
 					finaliza();
 				}
 				else{
@@ -81,15 +127,21 @@ public class Batalha extends Controller {
 		}
 		public void action(){
 			this.deuProblema();
-			System.out.println(fugiu.getNome()+" fugiu. "+ganhou.getNome()+" � o vencedor!");
+			if (ganhou.ehSelvagem() == true)
+				System.out.println(fugiu.getNome()+" fugiu com sucesso!");
+			if (ganhou.ehSelvagem() == false)
+				System.out.println(fugiu.getNome()+" fugiu. "+ganhou.getNome()+" � o vencedor!");
 			finaliza();
 		}
 	}
 	private class Restart extends Event{
 		private int prior = -1;
-		public Restart(long eventTime) {
+		boolean achou;
+		public Restart(long eventTime, boolean achou) {
 			super(eventTime);
+			this.achou = achou;
 		}
+		Mapa mapa = new Mapa(false, true, false, true, false, true, false, true, false);
 		
 		Item potion = new Item ("Potion", 100);
 		
@@ -132,85 +184,93 @@ public class Batalha extends Controller {
 		Pokemon blastoise = new Pokemon ("Blastoise", 300, surf, waterGun, iceBeam, earthquake);
 		Pokemon snorlax = new Pokemon ("Snorlax", 450, bodySlam, earthquake, hyperBeam, headbutt);
 
-		Pokemon sceptile = new Pokemon ("Sceptile", 300, solarbeam, sludge, razorLeaf, leafBlade);
-		Pokemon gardevoir = new Pokemon ("Gardevoir", 350, thunderbolt, psychic, flamethrower, confusion);
-		Pokemon tyranitar = new Pokemon ("Tyranitar", 450, rockSlide, earthquake, dragonbreath, seismicToss);
-		Pokemon octilery = new Pokemon ("Octilery", 250, surf, zapCannon, iceBeam, hyperBeam);
-		Pokemon hitmontop = new Pokemon ("Hitmontop", 200, megaPunch, megaKick, seismicToss, earthquake);
-		Pokemon houndoom = new Pokemon ("Houndoom", 300, fireBlast, bite, quickAttack, flamethrower);
+		Pokemon rhydon = new Pokemon ("Rhydon", 400, earthquake, rockSlide, seismicToss, headbutt);
 		
 		Treinador red = new Treinador ("Red", 6, pikachu, charizard, chansey, alakazan, blastoise, snorlax);
-		Treinador silver = new Treinador ("Silver", 6,  sceptile, gardevoir, tyranitar, octilery, hitmontop, houndoom);
+		Treinador selvagem = new Treinador ("Selvagem", 1,  rhydon, true);
 
 		public void action(){
 			long tm = System.currentTimeMillis();
-			addEvent(new Atacar(tm, 3, red, silver)); //pikachu quick
-			addEvent(new Atacar(tm, 3, silver, red)); //scep leaf
-			addEvent(new Atacar(tm, 0, red, silver)); //pikachu zap (depois)
-			addEvent(new Atacar(tm, 2, silver, red)); //scep razor
-			addEvent(new Atacar(tm, 1, red, silver)); //pikachu thunder
-			addEvent(new Atacar(tm, 1, silver, red)); //scep sludge e pika morre
-			addEvent(new Atacar(tm, 1, red, silver)); //chari flame (depois)
-			addEvent(new UsarItem(tm, potion, sceptile)); //scep recupera
-			addEvent(new Atacar(tm, 0, red, silver)); //chari fire
-			addEvent(new Trocar(tm, silver, 3)); //vai octi
-			addEvent(new Atacar(tm, 2, red, silver)); //chari fly
-			addEvent(new Atacar(tm, 2, silver, red)); //octi ice
-			addEvent(new Atacar(tm, 3, red, silver)); //chari metal e octi morre
-			addEvent(new Atacar(tm, 0, silver, red)); //deleta
-			addEvent(new Atacar(tm, 2, red, silver)); //chari fly
-			addEvent(new Atacar(tm, 3, silver, red)); //garde confusion
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 2, silver, red));
-			addEvent(new Atacar(tm, 3, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 0, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
-			addEvent(new Atacar(tm, 1, silver, red));
+			if (achou == false){
+				addEvent(new Andar(tm, 'd', mapa));
+				addEvent(new Andar(tm, 'd', mapa));
+				addEvent(new Andar(tm, 'e', mapa));
+				addEvent(new Andar(tm, 'c', mapa));
+				addEvent(new Andar(tm, 'b', mapa));
+				addEvent(new Andar(tm, 'b', mapa));
+				addEvent(new Andar(tm, 'e', mapa));
+				}
+			if (achou == true){
+				addEvent(new Atacar(tm, 3, red, selvagem)); 
+				addEvent(new Atacar(tm, selvagem, red)); 
+				addEvent(new Atacar(tm, 1, red, selvagem)); 
+				addEvent(new Atacar(tm, selvagem, red)); 
+				addEvent(new Atacar(tm, 2, red, selvagem)); 
+				addEvent(new Atacar(tm, selvagem, red)); 
+				addEvent(new Atacar(tm, 3, red, selvagem)); 
+				addEvent(new Atacar(tm, selvagem, red)); 
+				addEvent(new Atacar(tm, 2, red, selvagem)); 
+				addEvent(new Atacar(tm, selvagem, red)); 
+				addEvent(new Atacar(tm, 0, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 1, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 2, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 3, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 1, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 0, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 1, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 3, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 2, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 0, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 1, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 3, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 2, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 0, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 1, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 0, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 1, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 2, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 3, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 2, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 0, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 1, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 0, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+				addEvent(new Atacar(tm, 1, red, selvagem));
+				addEvent(new Atacar(tm, selvagem, red));
+			}
 		}
 
 	}
 	public static void main(String[] args){
 		Batalha bat = new Batalha(); 
 		long tm = System.currentTimeMillis(); 
-		bat.addEvent(bat.new Restart(tm)); 
+		while (bat.achou() == false){
+			bat.addEvent(bat.new Restart(tm, bat.achou())); 
+			bat.run();
+		}
+		bat.addEvent(bat.new Restart(tm, bat.achou())); 
 		bat.run();
 	}
 }
