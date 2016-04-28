@@ -20,7 +20,12 @@ class EventSet {
 		return events[next];
 	}
 	public void removeCurrent() {
-			events[next] =	 null;
+		events[next] =	 null;
+	}
+	public void voltaNext(){
+		if (next == 0)
+			return;
+		next = next - 1;
 	}
 }
 
@@ -32,11 +37,10 @@ public class Controller {
 	public void run() {
 		Event e, f;
 		f = null;
-		while(es.getNext() != null) {
-			e = es.getNext();
-			es.removeCurrent();
+		while((e = es.getNext()) != null) {
+			//es.removeCurrent();
 			f = es.getNext();
-			es.removeCurrent();
+		//	es.removeCurrent();
 			if (f != null){
 				if (e.getPrior() <= f.getPrior()) {
 					if(e.ready()){
@@ -46,6 +50,9 @@ public class Controller {
 					if(e.getProblema() == false && f.ready()){
 						f.action();
 					}
+					es.removeCurrent();
+					es.voltaNext();
+					es.removeCurrent();
 				}
 				else{
 					if(f.ready()){
@@ -54,12 +61,17 @@ public class Controller {
 					if(f.getProblema() == false && e.ready()){
 						e.action();
 					}
+					es.removeCurrent();
+					es.voltaNext();
+					es.removeCurrent();
 				}
 			}
 			else{
 				if(e.ready()){
 					e.action();
-				}
+					es.removeCurrent();
+					es.voltaNext();
+					es.removeCurrent();				}
 			}
 		}
 	}

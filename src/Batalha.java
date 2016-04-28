@@ -146,9 +146,9 @@ public class Batalha extends Controller {
 			long tm = System.currentTimeMillis();
 			addEvent(new Atacar(tm, 3, red, silver));
 			addEvent(new Atacar(tm, 3, silver, red));
-			addEvent(new Atacar(tm, 2, red, silver));
-			addEvent(new Atacar(tm, 0, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
+			addEvent(new Atacar(tm, 0, red, silver));
+			addEvent(new Atacar(tm, 2, silver, red));
+			/*addEvent(new Atacar(tm, 1, red, silver));
 			addEvent(new Atacar(tm, 1, silver, red));
 			addEvent(new Atacar(tm, 1, red, silver));
 			addEvent(new Atacar(tm, 2, silver, red));
@@ -214,7 +214,7 @@ public class Batalha extends Controller {
 			addEvent(new Atacar(tm, 0, silver, red));
 			addEvent(new Atacar(tm, 1, red, silver));
 			addEvent(new Atacar(tm, 1, silver, red));
-			addEvent(new Atacar(tm, 1, red, silver));
+			addEvent(new Atacar(tm, 1, red, silver));*/
 		}
 
 	}
