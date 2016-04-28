@@ -48,7 +48,7 @@ public class Controller {
 					if(e.ready()){
 						e.action();
 					}
-					//aqui ele tem que ver se morreu o pokemon. se ele morrer AQUI, o proximo evento nao rola, pq seria o ataque dele
+					//aqui ele tem que ver se morreu o pokemon. se ele morrer AQUI, o proximo evento nao rola, pq seria o ataque dele.
 					if(e.getProblema() == false && f.ready()){
 						f.action();
 					}

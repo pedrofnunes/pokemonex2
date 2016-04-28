@@ -1,7 +1,7 @@
 
 public class Batalha extends Controller {
 	private class Atacar extends Event{
-		private int prior = 3;//ou 4 ou 5, dependendo da velocidade do ataque.
+		private int prior = 3;//ou 4 ou 5, dependendo da velocidade do ataque
 		private Treinador src;
 		private Treinador target;
 		private int i;
